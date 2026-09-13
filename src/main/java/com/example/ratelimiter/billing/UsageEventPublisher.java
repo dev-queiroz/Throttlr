@@ -9,6 +9,7 @@ import com.example.ratelimiter.domain.RateLimitDecision;
 import com.example.ratelimiter.domain.TenantContext;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class UsageEventPublisher {
     private final Counter publishedCounter;
     private final Counter failedCounter;
 
+    @Autowired
     public UsageEventPublisher(
             KafkaTemplate<String, UsageEvent> kafkaTemplate,
             RateLimiterProperties properties,
