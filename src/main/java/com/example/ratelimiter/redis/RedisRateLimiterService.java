@@ -2,6 +2,7 @@ package com.example.ratelimiter.redis;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 import com.example.ratelimiter.domain.RateLimitAlgorithm;
@@ -105,7 +106,10 @@ public class RedisRateLimiterService {
 
     @SuppressWarnings("unchecked")
     private List<Long> execute(DefaultRedisScript<List> script, List<String> keys, Object... args) {
-        Object result = redisTemplate.execute(script, keys, args);
+        Object[] serializedArgs = Arrays.stream(args)
+                .map(String::valueOf)
+                .toArray();
+        Object result = redisTemplate.execute(script, keys, serializedArgs);
         if (result instanceof List<?> values) {
             return values.stream()
                     .map(value -> ((Number) value).longValue())
