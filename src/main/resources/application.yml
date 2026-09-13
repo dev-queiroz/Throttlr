@@ -1,6 +1,6 @@
 spring:
   application:
-    name: distributed-rate-limiter
+    name: throttlr
   threads:
     virtual:
       enabled: true
@@ -75,13 +75,49 @@ rate-limiter:
   kafka:
     usage-topic: api-usage-events
   fallback:
-    default-mode: fail-open
+    default-mode: FAIL_OPEN
   global-policy:
     id: global-default
-    algorithm: token_bucket
+    scope: GLOBAL
+    algorithm: TOKEN_BUCKET
     hard-limit: 1000
     soft-limit: 900
     refill-rate-per-second: 100
     burst-capacity: 1000
-    window-seconds: 60
+    window: 60s
     cost: 1
+  policies:
+    - id: plan-free-default
+      scope: PLAN
+      tenant-id: demo
+      plan-id: free
+      algorithm: SLIDING_WINDOW_COUNTER
+      hard-limit: 100
+      soft-limit: 80
+      window: 60s
+      cost: 1
+      fallback-mode: FAIL_OPEN
+    - id: org-demo-burst
+      scope: ORGANIZATION
+      tenant-id: demo
+      organization-id: acme
+      algorithm: TOKEN_BUCKET
+      hard-limit: 500
+      soft-limit: 450
+      refill-rate-per-second: 50
+      burst-capacity: 500
+      window: 60s
+      cost: 1
+      fallback-mode: FAIL_OPEN
+    - id: user-vip-override
+      scope: USER
+      tenant-id: demo
+      user-id: vip-user
+      algorithm: LEAKY_BUCKET
+      hard-limit: 1000
+      soft-limit: 900
+      refill-rate-per-second: 100
+      burst-capacity: 1000
+      window: 60s
+      cost: 1
+      fallback-mode: FAIL_OPEN

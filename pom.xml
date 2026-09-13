@@ -12,9 +12,9 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>distributed-rate-limiter</artifactId>
+    <artifactId>throttlr</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>distributed-rate-limiter</name>
+    <name>Throttlr</name>
     <description>Distributed Rate Limiting and Quota System with hierarchical policies.</description>
 
     <properties>
