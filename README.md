@@ -1,4 +1,4 @@
-# Distributed Rate Limiter
+# Throttlr
 
 Sistema de rate limiting distribuido e quota em Java 21, Spring Boot 3, Redis Cluster, Kafka, Micrometer/Prometheus e Resilience4j.
 
