@@ -11,3 +11,9 @@ mvn spring-boot:run
 
 Swagger UI: `http://localhost:8080/swagger-ui.html`
 Prometheus: `http://localhost:9090`
+
+Infra local:
+
+- Redis Cluster: `localhost:7000`, `localhost:7001`, `localhost:7002`
+- Kafka: `localhost:9092`
+- Topico de billing: `api-usage-events`
