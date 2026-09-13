@@ -26,7 +26,7 @@ spring:
       compression-type: zstd
       properties:
         linger.ms: 5
-        delivery.timeout.ms: 30000
+        delivery.timeout.ms: 45000
         enable.idempotence: true
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

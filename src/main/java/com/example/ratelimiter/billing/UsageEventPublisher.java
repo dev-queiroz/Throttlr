@@ -71,14 +71,18 @@ public class UsageEventPublisher {
                     decision.fallbackApplied()
             );
 
-            kafkaTemplate.send(properties.getKafka().getUsageTopic(), context.tenantId(), event)
-                    .whenComplete((result, error) -> {
-                        if (error == null) {
-                            publishedCounter.increment();
-                        } else {
-                            failedCounter.increment();
-                        }
-                    });
+            try {
+                kafkaTemplate.send(properties.getKafka().getUsageTopic(), context.tenantId(), event)
+                        .whenComplete((result, error) -> {
+                            if (error == null) {
+                                publishedCounter.increment();
+                            } else {
+                                failedCounter.increment();
+                            }
+                        });
+            } catch (RuntimeException ex) {
+                failedCounter.increment();
+            }
         });
     }
 }

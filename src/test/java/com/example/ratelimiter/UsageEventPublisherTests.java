@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,5 +56,24 @@ class UsageEventPublisherTests {
         publisher.publishAllowed(context, rejected);
 
         verify(kafkaTemplate, never()).send(any(), any(), any());
+    }
+
+    @Test
+    void handlesImmediateKafkaProducerFailure() {
+        KafkaTemplate<String, UsageEvent> kafkaTemplate = mock();
+        RateLimiterProperties properties = new RateLimiterProperties();
+        UsageEventPublisher publisher = new UsageEventPublisher(kafkaTemplate, properties, Runnable::run,
+                new SimpleMeterRegistry());
+        TenantContext context = new TenantContext("tenant", "org", "plan", "user", "/v1/orders", 2);
+        RateLimitDecision allowed = new RateLimitDecision(true, false, false, "policy",
+                RateLimitAlgorithm.TOKEN_BUCKET, 10, 20, Duration.ZERO, "allowed");
+
+        when(kafkaTemplate.send(eq("api-usage-events"), eq("tenant"), any(UsageEvent.class)))
+                .thenThrow(new IllegalStateException("producer unavailable"));
+
+        publisher.publishAllowed(context, allowed);
+
+        verify(kafkaTemplate).send(eq("api-usage-events"), eq("tenant"), any(UsageEvent.class));
+        verifyNoMoreInteractions(kafkaTemplate);
     }
 }
