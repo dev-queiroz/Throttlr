@@ -12,6 +12,7 @@ import com.example.ratelimiter.domain.TenantContext;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -28,6 +29,7 @@ public class RedisRateLimiterService {
     private final DefaultRedisScript<List> slidingWindowScript;
     private final DefaultRedisScript<List> leakyBucketScript;
 
+    @Autowired
     public RedisRateLimiterService(StringRedisTemplate redisTemplate, MeterRegistry meterRegistry) {
         this(redisTemplate, Clock.systemUTC(), meterRegistry);
     }
